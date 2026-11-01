@@ -1,5 +1,6 @@
 #include<iostream>
 #include<string>
+#include<vector>
 
 using namespace std;
 
@@ -12,9 +13,10 @@ struct Etudiant{
     Age age;
     string nom;
     string prenom;
-    Note note[5];
+    vector<Note>note;
+    int nbreNote;
 };
-
+/*La saisir des informations des etudiants*/
 void saisir(Etudiant& e)
 {
     cout<<"\tMatricule: ";
@@ -25,22 +27,26 @@ void saisir(Etudiant& e)
     cin>>e.nom;
     cout<<"\tPrenom: ";
     cin>>e.prenom;
-    cout<<"\tLes 5 notes\n";
-    for(int i = 0; i<5; i++)
+    e.note.resize(e.nbreNote);
+    for(int j = 0; j<e.nbreNote; j++)
     {
-        cout<<"\t\tNote["<<i<<"] = ";
-        cin>>e.note[i];
+        do
+        {
+            cout<<"\t\tNote["<<j<<"] = ";
+            cin>>e.note[j];
+        } while (e.note[j] < 0 || e.note[j] > 20);
+        
     }
 }
 
 double calculerMoyenne(const Etudiant& e)
 {
     double somme = 0;
-    for(int i =0; i< 5; i++)
+    for(size_t i =0; i < e.note.size(); i++)
     {
         somme = somme + e.note[i];
     }
-    return somme / 5;
+    return somme / e.note.size();
 }
 
 void afficher(const Etudiant& e)
@@ -60,7 +66,7 @@ void afficher(const Etudiant& e)
     }
 }
 
-int rechercher(const Etudiant classe[], int taille, Matricule matricule)
+int rechercher(vector<Etudiant>& classe, int taille, Matricule matricule)
 {
     for(int i =0; i<taille; i++)
     {
@@ -74,24 +80,34 @@ int rechercher(const Etudiant classe[], int taille, Matricule matricule)
 
 int main()
 {
-    const int N = 3;
-    Etudiant classe[N];
+    int nbreEtudiant, nbreNot;
+    cout<<"Entrer le nombre d'etudiant: ";
+    cin>>nbreEtudiant;
+    vector<Etudiant>classe(nbreEtudiant);
+    cout<<"Entrer le nombre de note: ";
+    cin>>nbreNot;
+    
+    for(int k = 0; k < nbreEtudiant; k++)
+    {
+        classe[k].nbreNote = nbreNot;
+    }
     int recherche;
-    for(int i =0;i<3; i++)
+    for(int i = 0; i < nbreEtudiant ; i++)
     {
         cout<<"\n====== Etudant"<< i<<"=======\n";
         saisir(classe[i]);
     }
     
-    for(int i =0;i<3; i++)
+    cout<<"\n============AFFICHAGE===========\n";
+    for(int i =0;i<nbreEtudiant; i++)
     {
         cout<<"\n====== Etudant"<< i<<"=======\n\n";
         afficher(classe[i]);
     }
-    cout<<"=====Rechercher etudiant=====\n";
+    cout<<"\n=====Rechercher etudiant=====\n";
     cout<<"Entrer matricule de l'etudiant rechercher: ";
     cin>>recherche;
-    int result = rechercher(classe,N,recherche);
+    int result = rechercher(classe,nbreEtudiant,recherche);
     if(result == -1)
     {
         cout<<"L'etudiant n'existe pas"<<endl;
